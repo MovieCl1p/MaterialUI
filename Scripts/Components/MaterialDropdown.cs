@@ -666,15 +666,31 @@ namespace MaterialUI
                 m_DropdownCanvasGameObject = new GameObject("Dropdown Canvas");
             }
 
-            m_DropdownCanvas = m_BaseTransform.root.GetComponent<Canvas>().Copy(m_DropdownCanvasGameObject);
+            m_DropdownCanvas = FindCanvas(m_BaseTransform).Copy(m_DropdownCanvasGameObject);
         }
 
+        private Canvas FindCanvas(Transform parent)
+        {
+            Canvas result = parent.GetComponent<Canvas>();
+            if (result != null)
+            {
+                return result;
+            }
+
+            if (parent.parent != null)
+            {
+                return FindCanvas(parent.parent);
+            }
+
+            return null;
+        }
+        
         /// <summary>
         /// Instantiates the dropdown object and expands it.
         /// </summary>
         public void Show()
         {
-            m_BaseTransform.root.GetComponent<Canvas>().CopySettingsToOtherCanvas(m_DropdownCanvas);
+            FindCanvas(m_BaseTransform).CopySettingsToOtherCanvas(m_DropdownCanvas);
             m_DropdownCanvas.pixelPerfect = true;
             m_DropdownCanvas.sortingOrder = 30000;
 
